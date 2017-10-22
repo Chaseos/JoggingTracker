@@ -4,11 +4,17 @@ package odometer.hfad.com.joggingtracker;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -24,11 +30,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import static odometer.hfad.com.joggingtracker.MapsActivity.DEFAULT_ZOOM;
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
+
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static odometer.hfad.com.joggingtracker.MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static odometer.hfad.com.joggingtracker.MapsActivity.TAG;
 
@@ -41,9 +50,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
+    public static final int DEFAULT_ZOOM = 17;
     private Location mLastKnownLocation;
+    private PulsatorLayout pulsator;
     private GoogleMap mMap;
-    private Location location;
 
     public MainMapFragment() {
         // Required empty public constructor
@@ -59,6 +69,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                 .findFragmentById(R.id.map_fragment);
         mapFragment.getMapAsync(this);
 
+        FloatingActionButton fab = rootView.findViewById(R.id.start_fab);
+        fab.setImageBitmap(textAsBitmap("START", 40, Color.BLACK));
+        pulsator = rootView.findViewById(R.id.pulsator);
+
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         LocationManager locationManager = (LocationManager) getActivity()
                 .getSystemService(Context.LOCATION_SERVICE);
@@ -70,6 +84,22 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
         }
 
         return rootView;
+    }
+
+    public static Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        Paint paint = new Paint(ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.0f); // round
+        int height = (int) (baseline + paint.descent() + 0.0f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
     }
 
     @Override
@@ -106,6 +136,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.setMyLocationEnabled(false);
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -131,6 +162,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
+                            mMap.addCircle(new CircleOptions()
+                                    .center(new LatLng(mLastKnownLocation.getLatitude(),
+                                            mLastKnownLocation.getLongitude()))
+                                    .radius(10)
+                                    .fillColor(Color.RED)
+                                    .strokeWidth(1)
+                                    .strokeColor(Color.WHITE));
+                            pulsator.start();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -151,14 +190,40 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast toast = null;
+        mMap.clear();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(),
+                        location.getLongitude()), DEFAULT_ZOOM));
+
         Log.d("blahblahlocation", String.valueOf(location.getAccuracy()));
-        if (location.getAccuracy() <= 5) {
-            toast.makeText(getContext(), "ACCURATE!", Toast.LENGTH_SHORT).show();
-        } else if (location.getAccuracy() > 5 && location.getAccuracy() <= 8) {
-            toast.makeText(getContext(), "KINDA ACCURATE", Toast.LENGTH_SHORT).show();
+
+        if (location.getAccuracy() <= 6) {
+            mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .radius(10)
+                    .fillColor(getResources().getColor(R.color.greenColor))
+                    .strokeWidth(1)
+                    .strokeColor(Color.WHITE));
+            pulsator.stop();
+            Toast.makeText(getContext(), "ACCURATE!", Toast.LENGTH_SHORT).show();
+        } else if (location.getAccuracy() > 6 && location.getAccuracy() <= 8) {
+            mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .radius(10)
+                    .fillColor(Color.YELLOW)
+                    .strokeWidth(1)
+                    .strokeColor(Color.WHITE));
+            pulsator.stop();
+            Toast.makeText(getContext(), "KINDA ACCURATE", Toast.LENGTH_SHORT).show();
         } else {
-            toast.makeText(getContext(), "NOT ACCURATE", Toast.LENGTH_SHORT).show();
+            mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .radius(10)
+                    .fillColor(Color.RED)
+                    .strokeWidth(1)
+                    .strokeColor(Color.WHITE));
+            pulsator.start();
+            Toast.makeText(getContext(), "NOT ACCURATE", Toast.LENGTH_SHORT).show();
         }
     }
 

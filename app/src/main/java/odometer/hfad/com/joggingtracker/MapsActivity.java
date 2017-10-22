@@ -32,6 +32,8 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
+import static odometer.hfad.com.joggingtracker.MainMapFragment.DEFAULT_ZOOM;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         LocationListener, GoogleMap.OnPolylineClickListener {
 
@@ -42,7 +44,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final long UPDATE_INTERVAL = 10 * 1000;
     private static final long FASTEST_INTERVAL = 2000;
     private boolean mLocationPermissionGranted;
-    public static final int DEFAULT_ZOOM = 18;
     private ArrayList<LatLng> mapPoints;
     private Location mLastKnownLocation;
     private GoogleMap mMap;
