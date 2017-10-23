@@ -195,8 +195,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                 new LatLng(location.getLatitude(),
                         location.getLongitude()), DEFAULT_ZOOM));
 
-        Log.d("blahblahlocation", String.valueOf(location.getAccuracy()));
-
         if (location.getAccuracy() <= 6) {
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -205,7 +203,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                     .strokeWidth(1)
                     .strokeColor(Color.WHITE));
             pulsator.stop();
-            Toast.makeText(getContext(), "ACCURATE!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "ACCURATE!", Toast.LENGTH_SHORT).show();
         } else if (location.getAccuracy() > 6 && location.getAccuracy() <= 8) {
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -214,7 +212,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                     .strokeWidth(1)
                     .strokeColor(Color.WHITE));
             pulsator.stop();
-            Toast.makeText(getContext(), "KINDA ACCURATE", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "KINDA ACCURATE", Toast.LENGTH_SHORT).show();
         } else {
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -223,7 +221,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                     .strokeWidth(1)
                     .strokeColor(Color.WHITE));
             pulsator.start();
-            Toast.makeText(getContext(), "NOT ACCURATE", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "NOT ACCURATE", Toast.LENGTH_SHORT).show();
         }
     }
 
