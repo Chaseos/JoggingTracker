@@ -35,6 +35,9 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_maps"
              />
+        <activity android:name=".RunActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

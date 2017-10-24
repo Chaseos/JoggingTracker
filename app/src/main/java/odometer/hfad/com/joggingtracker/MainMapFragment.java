@@ -3,6 +3,7 @@ package odometer.hfad.com.joggingtracker;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -22,7 +23,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -45,7 +45,7 @@ import static odometer.hfad.com.joggingtracker.MapsActivity.TAG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainMapFragment extends Fragment implements OnMapReadyCallback, LocationListener{
+public class MainMapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -71,6 +71,13 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
 
         FloatingActionButton fab = rootView.findViewById(R.id.start_fab);
         fab.setImageBitmap(textAsBitmap("START", 40, Color.BLACK));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), RunActivity.class);
+                startActivity(intent);
+            }
+        });
         pulsator = rootView.findViewById(R.id.pulsator);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
@@ -143,7 +150,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Loc
                 mLastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
