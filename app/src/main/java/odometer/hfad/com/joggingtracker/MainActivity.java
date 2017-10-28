@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RunActivity.class);
+                Intent intent = new Intent(MainActivity.this, JogActivity.class);
                 startActivity(intent);
             }
         });
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void selectDrawerItem(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_activity:
-                Intent intent = new Intent(MainActivity.this, PreviousRunsActivity.class);
+                Intent intent = new Intent(MainActivity.this, PreviousJogsActivity.class);
                 item.setChecked(true);
                 mDrawerLayout.closeDrawers();
                 startActivity(intent);

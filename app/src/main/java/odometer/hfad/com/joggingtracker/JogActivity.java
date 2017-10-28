@@ -37,7 +37,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
-public class RunActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
+public class JogActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -139,7 +139,7 @@ public class RunActivity extends AppCompatActivity implements LocationListener, 
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //TODO: Convert and insert data into database then place id in intent and send to RunFinished
             }
         });
 

@@ -31,13 +31,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RunActivity"
+            android:name=".JogActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".PreviousRunsActivity"
+        <activity
+            android:name=".PreviousJogsActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SingleJogActivity"></activity>
     </application>
 
 </manifest>

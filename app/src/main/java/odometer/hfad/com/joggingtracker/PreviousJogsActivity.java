@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-public class PreviousRunsActivity extends AppCompatActivity {
+public class PreviousJogsActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle drawerToggle;
@@ -29,6 +29,9 @@ public class PreviousRunsActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(drawerToggle);
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
+
+        //TODO: Query database for all runs and fill recyclerview with adapter with those views.
+        //TODO: On click of item place id in intent and pass onto RunFinished
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -46,7 +49,7 @@ public class PreviousRunsActivity extends AppCompatActivity {
     private void selectDrawerItem(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_run:
-                Intent intent = new Intent(PreviousRunsActivity.this, MainActivity.class);
+                Intent intent = new Intent(PreviousJogsActivity.this, MainActivity.class);
                 item.setChecked(true);
                 mDrawerLayout.closeDrawers();
                 startActivity(intent);
