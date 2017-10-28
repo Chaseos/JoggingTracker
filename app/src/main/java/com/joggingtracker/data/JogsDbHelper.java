@@ -1,10 +1,10 @@
-package odometer.hfad.com.joggingtracker.data;
+package com.joggingtracker.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class JogsDbHelper extends SQLiteOpenHelper{
+public class JogsDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "jogs.db";
     private static final int DATABASE_VERSION = 1;
@@ -18,7 +18,7 @@ public class JogsDbHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_INSECT_TABLE =
                 "CREATE TABLE " + JogContract.JogEntry.TABLE_NAME + " (" +
                         JogContract.JogEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        JogContract.JogEntry.COLUMN_JOG_DATE_TIME + " TEXT NOT NULL," +
+                        JogContract.JogEntry.COLUMN_JOG_DATE_TIME + " LONG NOT NULL," +
                         JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH + " TEXT NOT NULL," +
                         JogContract.JogEntry.COLUMN_JOG_PACE + " TEXT NOT NULL," +
                         JogContract.JogEntry.COLUMN_JOG_TIME_LENGTH + " TEXT NOT NULL," +

@@ -1,4 +1,4 @@
-package odometer.hfad.com.joggingtracker;
+package com.joggingtracker;
 
 import android.content.Intent;
 import android.os.Bundle;

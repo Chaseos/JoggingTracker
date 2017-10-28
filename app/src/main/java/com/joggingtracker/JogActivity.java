@@ -1,9 +1,11 @@
-package odometer.hfad.com.joggingtracker;
+package com.joggingtracker;
 
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -32,8 +34,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
+import com.joggingtracker.data.JogContract;
 
 import java.util.ArrayList;
 
@@ -45,18 +51,24 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final long UPDATE_INTERVAL = 10 * 1000;
     private static final long FASTEST_INTERVAL = 2000;
+    private static final String JOG_DATE = "jog_date";
     private boolean mLocationPermissionGranted;
-    public static final int DEFAULT_ZOOM = 17;
+    public static final int JOG_MAP_ZOOM = 18;
     private Location mLastKnownLocation;
     private ArrayList<LatLng> mapPoints;
     private ImageView accuracyIndicator;
+    private String milesDistanceString;
     private Location previousLocation;
     private double kmDistance = 0;
+    private double milesDistance;
     private long startTime = 0;
     private TextView timerTV;
     private TextView milesTV;
     private TextView speedTV;
+    private Context context;
+    private String runtime;
     private GoogleMap mMap;
+    private String pace;
     private int minutes;
     private int seconds;
     private long millis;
@@ -71,7 +83,8 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
             seconds = (int) (millis / 1000);
             minutes = seconds / 60;
             seconds = seconds % 60;
-            timerTV.setText(String.format("%d:%02d", minutes, seconds));
+            runtime = String.format("%d:%02d", minutes, seconds);
+            timerTV.setText(runtime);
             timerHandler.postDelayed(this, 500);
         }
     };
@@ -88,11 +101,14 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         speedTV = (TextView) findViewById(R.id.speed_textview);
         speedTV.setText("00:00");
 
+        context = this;
+
         accuracyIndicator = (ImageView) findViewById(R.id.accuracy_indicator);
         accuracyIndicator.setImageResource(R.drawable.red_circle);
 
         final ConstraintLayout constraintLayout = (ConstraintLayout) findViewById(R.id.background_map_layout);
 
+        mapPoints = new ArrayList<>();
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.background_map_fragment);
         mapFragment.getMapAsync(this);
@@ -140,6 +156,20 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
             @Override
             public void onClick(View view) {
                 //TODO: Convert and insert data into database then place id in intent and send to RunFinished
+                Long dateTime = System.currentTimeMillis();
+                Gson gson = new Gson();
+                String jogPath = gson.toJson(mapPoints);
+                ContentValues values = new ContentValues();
+                values.put(JogContract.JogEntry.COLUMN_JOG_DATE_TIME, dateTime);
+                values.put(JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH, milesDistanceString);
+                values.put(JogContract.JogEntry.COLUMN_JOG_TIME_LENGTH, runtime);
+                values.put(JogContract.JogEntry.COLUMN_JOG_PACE, pace);
+                values.put(JogContract.JogEntry.COLUMN_JOG_PATH_JSON, jogPath);
+                getContentResolver().insert(JogContract.JogEntry.CONTENT_URI, values);
+
+                Intent intent = new Intent(JogActivity.this, SingleJogActivity.class);
+                intent.putExtra(JOG_DATE, dateTime);
+                startActivity(intent);
             }
         });
 
@@ -160,14 +190,19 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     public void onLocationChanged(Location location) {
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, JOG_MAP_ZOOM));
+
+        mapPoints.add(latLng);
+        Polyline route = mMap.addPolyline(new PolylineOptions().clickable(true));
+        route.setPoints(mapPoints);
 
         if (previousLocation == null) {
             previousLocation = location;
         } else {
             kmDistance += previousLocation.distanceTo(location);
-            double milesDistance = (kmDistance / 1000) * .62137;
-            milesTV.setText(String.format("%.2f", milesDistance));
+            milesDistance = (kmDistance / 1000) * .62137;
+            milesDistanceString = String.format("%.2f", milesDistance);
+            milesTV.setText(milesDistanceString);
             previousLocation = location;
 
             if (milesDistance > 0.009) {
@@ -176,14 +211,16 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
                 int speedSecs = (int) (totaltime % 60);
 
                 if (speedMins > 99) {
-                    speedTV.setText("99+'");
+                    pace = "99+'";
+                    speedTV.setText(pace);
                 } else {
-                    speedTV.setText(String.format("%d:%02d", speedMins, speedSecs));
+                    pace = String.format("%d:%02d", speedMins, speedSecs);
+                    speedTV.setText(pace);
                 }
             }
         }
 
-        Log.d("blahblah", String.valueOf(location.getAccuracy()));
+//        Log.d("blahblah", String.valueOf(location.getAccuracy()));
 
         if (location.getAccuracy() <= 6) {
             accuracyIndicator.setImageResource(R.drawable.green_circle);
@@ -272,12 +309,12 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
                             mLastKnownLocation = task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                            mLastKnownLocation.getLongitude()), JOG_MAP_ZOOM));
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
                             mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                                    .newLatLngZoom(mDefaultLocation, JOG_MAP_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }

@@ -1,4 +1,4 @@
-package odometer.hfad.com.joggingtracker;
+package com.joggingtracker;
 
 import android.Manifest;
 import android.content.Context;
@@ -41,7 +41,7 @@ import com.google.android.gms.tasks.Task;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
-import static odometer.hfad.com.joggingtracker.MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static com.joggingtracker.MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
 
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new LatLng(location.getLatitude(),
                         location.getLongitude()), DEFAULT_ZOOM));
 
-        Log.d("blahblahmain", String.valueOf(location.getAccuracy()));
+//        Log.d("blahblahmain", String.valueOf(location.getAccuracy()));
         if (location.getAccuracy() <= 6) {
             mMap.addCircle(new CircleOptions()
                     .center(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -226,11 +226,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
-                            if (mLastKnownLocation != null) {
-                                Log.d("blahblah", "mLastKnown is not null");
-                            } else {
-                                Log.d("blahblah", "mLastKnown is null");
-                            }
                             mMap.addCircle(new CircleOptions()
                                     .center(new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()))

@@ -1,4 +1,4 @@
-package odometer.hfad.com.joggingtracker.data;
+package com.joggingtracker.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import static odometer.hfad.com.joggingtracker.data.JogContract.AUTHORITY;
-
 public class JogsContentProvider extends ContentProvider {
 
     private static final int ALL_JOGS = 100;
@@ -23,8 +21,8 @@ public class JogsContentProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        uriMatcher.addURI(AUTHORITY, JogContract.JogEntry.TABLE_NAME, ALL_JOGS);
-        uriMatcher.addURI(AUTHORITY, JogContract.JogEntry.TABLE_NAME + "/#", JOG_WITH_ID);
+        uriMatcher.addURI(JogContract.AUTHORITY, JogContract.JogEntry.TABLE_NAME, ALL_JOGS);
+        uriMatcher.addURI(JogContract.AUTHORITY, JogContract.JogEntry.TABLE_NAME + "/#", JOG_WITH_ID);
         return uriMatcher;
     }
 

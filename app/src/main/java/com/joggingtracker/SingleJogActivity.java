@@ -1,7 +1,7 @@
-package odometer.hfad.com.joggingtracker;
+package com.joggingtracker;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public class SingleJogActivity extends AppCompatActivity {
 
