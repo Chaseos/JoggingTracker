@@ -49,17 +49,39 @@
         app:layout_constraintTop_toBottomOf="@+id/miles_textview" />
 
     <ImageView
-        android:id="@+id/pause_fab"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:id="@+id/pause_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="6dp"
         android:clickable="true"
-        android:src="@drawable/pause2"
+        android:src="@drawable/pause_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/big_orange_background" />
+
+    <ImageView
+        android:id="@+id/stop_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:visibility="gone"
+        android:src="@drawable/stop_button"
+        app:layout_constraintEnd_toEndOf="@+id/pause_button"
+        app:layout_constraintTop_toTopOf="@+id/pause_button" />
+
+    <ImageView
+        android:id="@+id/play_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:clickable="true"
+        android:visibility="gone"
+        android:src="@drawable/play_button"
+        app:layout_constraintStart_toStartOf="@+id/pause_button"
+        app:layout_constraintTop_toTopOf="@+id/pause_button" />
 
     <ImageView
         android:id="@+id/stopwatch_image"

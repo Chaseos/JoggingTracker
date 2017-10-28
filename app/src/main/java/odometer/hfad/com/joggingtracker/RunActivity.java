@@ -5,15 +5,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
@@ -34,14 +31,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class RunActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
@@ -120,8 +113,30 @@ public class RunActivity extends AppCompatActivity implements LocationListener, 
             }
         });
 
-        ImageView pause_button = (ImageView) findViewById(R.id.pause_fab);
-        pause_button.setOnClickListener(new View.OnClickListener() {
+        final ImageView pauseButton = (ImageView) findViewById(R.id.pause_button);
+        final ImageView stopButton = (ImageView) findViewById(R.id.stop_button);
+        final ImageView playButton = (ImageView) findViewById(R.id.play_button);
+        final Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                v.vibrate(1000);
+                pauseButton.setVisibility(View.GONE);
+                stopButton.setVisibility(View.VISIBLE);
+                playButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pauseButton.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(View.GONE);
+                playButton.setVisibility(View.GONE);
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

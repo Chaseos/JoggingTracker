@@ -3,7 +3,6 @@ package odometer.hfad.com.joggingtracker;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -32,12 +31,11 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
-import static odometer.hfad.com.joggingtracker.MainMapFragment.DEFAULT_ZOOM;
-
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         LocationListener, GoogleMap.OnPolylineClickListener {
 
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    public static final int DEFAULT_ZOOM = 17;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     public static final String TAG = MapsActivity.class.getSimpleName();
     private FusedLocationProviderClient mFusedLocationProviderClient;
