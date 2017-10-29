@@ -51,7 +51,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final long UPDATE_INTERVAL = 10 * 1000;
     private static final long FASTEST_INTERVAL = 2000;
-    private static final String JOG_DATE = "jog_date";
+    public static final String JOG_DATE = "jog_date";
     private boolean mLocationPermissionGranted;
     public static final int JOG_MAP_ZOOM = 18;
     private Location mLastKnownLocation;
@@ -190,7 +190,6 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     public void onLocationChanged(Location location) {
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, JOG_MAP_ZOOM));
 
         mapPoints.add(latLng);
         Polyline route = mMap.addPolyline(new PolylineOptions().clickable(true));
@@ -204,6 +203,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
             milesDistanceString = String.format("%.2f", milesDistance);
             milesTV.setText(milesDistanceString);
             previousLocation = location;
+            pace = "99+'";
 
             if (milesDistance > 0.009) {
                 double totaltime = (millis / 1000) / milesDistance;
@@ -211,7 +211,6 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
                 int speedSecs = (int) (totaltime % 60);
 
                 if (speedMins > 99) {
-                    pace = "99+'";
                     speedTV.setText(pace);
                 } else {
                     pace = String.format("%d:%02d", speedMins, speedSecs);

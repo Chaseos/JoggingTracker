@@ -41,15 +41,15 @@ import com.google.android.gms.tasks.Task;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
-import static com.joggingtracker.MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
 
     private static final String TAG = "blahblah";
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
-    public static final int DEFAULT_ZOOM = 17;
+    private final int DEFAULT_ZOOM = 17;
     private Location mLastKnownLocation;
     private PulsatorLayout pulsator;
     private GoogleMap mMap;

@@ -13,9 +13,9 @@ public class JogContract {
                 .appendPath("jogs")
                 .build();
 
-        public static Uri buildJogUriWithId(int jogId) {
+        public static Uri buildJogUriWithDate(long jogDate) {
             return CONTENT_URI.buildUpon()
-                    .appendPath(String.valueOf(jogId))
+                    .appendPath(String.valueOf(jogDate))
                     .build();
         }
 

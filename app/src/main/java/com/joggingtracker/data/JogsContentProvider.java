@@ -14,7 +14,7 @@ import android.util.Log;
 public class JogsContentProvider extends ContentProvider {
 
     private static final int ALL_JOGS = 100;
-    private static final int JOG_WITH_ID = 101;
+    private static final int JOG_WITH_DATE = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -22,7 +22,7 @@ public class JogsContentProvider extends ContentProvider {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(JogContract.AUTHORITY, JogContract.JogEntry.TABLE_NAME, ALL_JOGS);
-        uriMatcher.addURI(JogContract.AUTHORITY, JogContract.JogEntry.TABLE_NAME + "/#", JOG_WITH_ID);
+        uriMatcher.addURI(JogContract.AUTHORITY, JogContract.JogEntry.TABLE_NAME + "/#", JOG_WITH_DATE);
         return uriMatcher;
     }
 
@@ -48,12 +48,13 @@ public class JogsContentProvider extends ContentProvider {
                 returnCursor = db.query(JogContract.JogEntry.TABLE_NAME,
                         null, null, null, null, null, sortOrder);
                 break;
-            case JOG_WITH_ID:
-                String jogId = uri.getLastPathSegment();
-                String[] selectionArguments = new String[]{jogId};
+            case JOG_WITH_DATE:
+                String jogDate = uri.getLastPathSegment();
+                String selectionDate = JogContract.JogEntry.COLUMN_JOG_DATE_TIME + " = ?";
+                String[] selectionArguments = new String[]{jogDate};
                 returnCursor = db.query(JogContract.JogEntry.TABLE_NAME,
                         projection,
-                        selection,
+                        selectionDate,
                         selectionArgs,
                         null, null, null);
                 break;
@@ -76,8 +77,14 @@ public class JogsContentProvider extends ContentProvider {
         SQLiteDatabase db = mJogDb.getWritableDatabase();
         long rowsChanged;
 
+        Log.d("blahblahtime", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_DATE_TIME));
+        Log.d("blahblahmiles", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH));
+        Log.d("blahblahpace", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_PACE));
+        Log.d("blahblahlength", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_TIME_LENGTH));
+        Log.d("blahblahjson", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_PATH_JSON));
+
         rowsChanged = db.insert(JogContract.JogEntry.TABLE_NAME, null, contentValues);
-        if (rowsChanged != 0) {
+        if (rowsChanged > 0) {
             Log.d("blahblahrowschanged", "insert: success " + rowsChanged);
         } else {
             throw new UnsupportedOperationException("Row not inserted " + uri);

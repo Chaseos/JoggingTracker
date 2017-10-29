@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="odometer.hfad.com.joggingtracker.SingleJogActivity">
+    tools:context="com.joggingtracker.SingleJogActivity">
 
     <fragment
         android:id="@+id/finish_map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,27 +45,49 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/miles_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/finish_map_fragment"
+        tools:text="15:34" />
+
+    <TextView
+        android:id="@+id/miles_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Miles"
+        app:layout_constraintTop_toBottomOf="@+id/miles_textview"
+        tools:layout_editor_absoluteX="176dp" />
+
+    <TextView
         android:id="@+id/pace_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
         android:textColor="@android:color/black"
         android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/miles_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/finish_map_fragment"
+        tools:layout_editor_absoluteY="362dp"
         tools:text="15:34" />
 
     <TextView
         android:id="@+id/duration_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
         android:textColor="@android:color/black"
         android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/miles_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/finish_map_fragment"
+        tools:layout_editor_absoluteY="422dp"
         tools:text="32:45" />
 
     <TextView
