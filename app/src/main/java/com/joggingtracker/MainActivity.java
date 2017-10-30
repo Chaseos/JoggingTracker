@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            System.exit(0);
+            this.finishAffinity();
         }
     }
 
