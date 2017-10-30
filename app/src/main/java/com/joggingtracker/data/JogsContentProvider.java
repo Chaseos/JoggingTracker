@@ -50,12 +50,12 @@ public class JogsContentProvider extends ContentProvider {
                 break;
             case JOG_WITH_DATE:
                 String jogDate = uri.getLastPathSegment();
-                String selectionDate = JogContract.JogEntry.COLUMN_JOG_DATE_TIME + " = ?";
-                String[] selectionArguments = new String[]{jogDate};
+                String selectionDate = JogContract.JogEntry.COLUMN_JOG_DATE_TIME + "=?";
+                String[] selectionArguments = new String[]{String.valueOf(jogDate)};
                 returnCursor = db.query(JogContract.JogEntry.TABLE_NAME,
                         projection,
                         selectionDate,
-                        selectionArgs,
+                        selectionArguments,
                         null, null, null);
                 break;
             default:
@@ -75,17 +75,11 @@ public class JogsContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
         SQLiteDatabase db = mJogDb.getWritableDatabase();
-        long rowsChanged;
+        long rowAddedId;
 
-        Log.d("blahblahtime", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_DATE_TIME));
-        Log.d("blahblahmiles", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH));
-        Log.d("blahblahpace", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_PACE));
-        Log.d("blahblahlength", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_TIME_LENGTH));
-        Log.d("blahblahjson", contentValues.getAsString(JogContract.JogEntry.COLUMN_JOG_PATH_JSON));
-
-        rowsChanged = db.insert(JogContract.JogEntry.TABLE_NAME, null, contentValues);
-        if (rowsChanged > 0) {
-            Log.d("blahblahrowschanged", "insert: success " + rowsChanged);
+        rowAddedId = db.insert(JogContract.JogEntry.TABLE_NAME, null, contentValues);
+        if (rowAddedId > 0) {
+            Log.d("blahblahrowschanged", "insert: success " + rowAddedId);
         } else {
             throw new UnsupportedOperationException("Row not inserted " + uri);
         }

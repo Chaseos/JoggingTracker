@@ -23,6 +23,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:backgroundTint="@android:color/transparent"
+        android:focusedByDefault="false"
         android:ems="10"
         android:inputType="textPersonName"
         android:textSize="18sp"
@@ -48,8 +49,6 @@
         android:id="@+id/miles_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:textColor="@android:color/black"
         android:textSize="30sp"
@@ -62,9 +61,12 @@
         android:id="@+id/miles_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:text="Miles"
-        app:layout_constraintTop_toBottomOf="@+id/miles_textview"
-        tools:layout_editor_absoluteX="176dp" />
+        app:layout_constraintEnd_toEndOf="@+id/miles_textview"
+        app:layout_constraintStart_toStartOf="@+id/miles_textview"
+        app:layout_constraintTop_toBottomOf="@+id/miles_textview" />
 
     <TextView
         android:id="@+id/pace_textview"

@@ -2,6 +2,7 @@ package com.joggingtracker.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 public class JogContract {
 
@@ -14,9 +15,10 @@ public class JogContract {
                 .build();
 
         public static Uri buildJogUriWithDate(long jogDate) {
-            return CONTENT_URI.buildUpon()
+            Uri uri = CONTENT_URI.buildUpon()
                     .appendPath(String.valueOf(jogDate))
                     .build();
+            return uri;
         }
 
         public static final String TABLE_NAME = "jogs";
