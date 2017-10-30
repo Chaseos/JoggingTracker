@@ -2,15 +2,11 @@ package com.joggingtracker;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,7 +30,6 @@ public class SingleJogActivity extends AppCompatActivity implements OnMapReadyCa
 
     private ArrayList<LatLng> mapPoints;
     private GoogleMap mMap;
-    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +37,7 @@ public class SingleJogActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.activity_run_finished);
         long jogDate = getIntent().getLongExtra(JOG_DATE, 0);
 
-        cursor = getContentResolver().query(JogContract.JogEntry.buildJogUriWithDate(jogDate),
+        Cursor cursor = getContentResolver().query(JogContract.JogEntry.buildJogUriWithDate(jogDate),
                 null, null, null, null);
         cursor.moveToFirst();
 

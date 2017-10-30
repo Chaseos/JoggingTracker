@@ -23,7 +23,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:backgroundTint="@android:color/transparent"
-        android:focusedByDefault="false"
         android:ems="10"
         android:inputType="textPersonName"
         android:textSize="18sp"
@@ -39,7 +38,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Title:"
+        android:text="@string/title"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/title_edit_text"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Miles"
+        android:text="@string/miles"
         app:layout_constraintEnd_toEndOf="@+id/miles_textview"
         app:layout_constraintStart_toStartOf="@+id/miles_textview"
         app:layout_constraintTop_toBottomOf="@+id/miles_textview" />
@@ -75,8 +74,8 @@
         android:layout_marginStart="32dp"
         android:textColor="@android:color/black"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@id/miles_text"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/miles_text"
         tools:layout_editor_absoluteY="362dp"
         tools:text="15:34" />
 
@@ -87,15 +86,15 @@
         android:layout_marginEnd="40dp"
         android:textColor="@android:color/black"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@id/miles_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/miles_text"
         tools:layout_editor_absoluteY="422dp"
         tools:text="32:45" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Avg. Pace"
+        android:text="@string/avg_pace"
         app:layout_constraintEnd_toEndOf="@+id/pace_textview"
         app:layout_constraintStart_toStartOf="@+id/pace_textview"
         app:layout_constraintTop_toBottomOf="@+id/pace_textview" />
@@ -103,7 +102,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Duration"
+        android:text="@string/duration"
         app:layout_constraintEnd_toEndOf="@+id/duration_textview"
         app:layout_constraintStart_toStartOf="@+id/duration_textview"
         app:layout_constraintTop_toBottomOf="@+id/duration_textview" />

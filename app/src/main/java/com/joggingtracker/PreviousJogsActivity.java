@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,19 +49,22 @@ public class PreviousJogsActivity extends AppCompatActivity {
         NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
         setupDrawerContent(nvDrawer);
 
-        //TODO: Query database for all runs and fill recyclerview with adapter with those views.
-        //TODO: On click of item place id in intent and pass onto RunFinished
         cursor = getContentResolver().query(JogContract.JogEntry.CONTENT_URI,
                 null, null, null,
                 JogContract.JogEntry.COLUMN_JOG_DATE_TIME + " DESC");
         cursor.moveToFirst();
 
-        Log.d("blahblahcursor", String.valueOf(cursor.getCount()));
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.previous_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         JogAdapter jogAdapter = new JogAdapter();
         recyclerView.setAdapter(jogAdapter);
+
+        TextView totalMilesTextView = (TextView) findViewById(R.id.total_miles_textview);
+        double totalMiles = 0.00;
+        do {
+            totalMiles += Double.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH)));
+        } while (cursor.moveToNext());
+        totalMilesTextView.setText(String.format("%.2f", totalMiles));
     }
 
     class JogAdapter extends RecyclerView.Adapter<JogAdapter.JogListViewHolder> {
@@ -93,11 +95,12 @@ public class PreviousJogsActivity extends AppCompatActivity {
             return cursor.getCount();
         }
 
-        public class JogListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public class JogListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             final TextView dateTextView;
             final TextView milesTextView;
             final TextView timeTextView;
             final TextView paceTextView;
+
 
             public JogListViewHolder(View itemView) {
                 super(itemView);
@@ -106,12 +109,16 @@ public class PreviousJogsActivity extends AppCompatActivity {
                 milesTextView = itemView.findViewById(R.id.miles_textView);
                 timeTextView = itemView.findViewById(R.id.time_textView);
                 paceTextView = itemView.findViewById(R.id.pace_textView);
+
+                itemView.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PreviousJogsActivity.this, SingleJogActivity.class);
+                int adapterPosition = getAdapterPosition();
+                cursor.moveToPosition(adapterPosition);
                 long jogDate = cursor.getLong(cursor.getColumnIndexOrThrow(JogContract.JogEntry.COLUMN_JOG_DATE_TIME));
+                Intent intent = new Intent(PreviousJogsActivity.this, SingleJogActivity.class);
                 intent.putExtra(JOG_DATE, jogDate);
                 startActivity(intent);
             }
@@ -159,7 +166,8 @@ public class PreviousJogsActivity extends AppCompatActivity {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(PreviousJogsActivity.this, MainActivity.class);
+            startActivity(intent);
         }
     }
 

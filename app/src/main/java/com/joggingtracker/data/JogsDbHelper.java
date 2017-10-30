@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class JogsDbHelper extends SQLiteOpenHelper {
+class JogsDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "jogs.db";
     private static final int DATABASE_VERSION = 1;

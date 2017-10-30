@@ -42,20 +42,20 @@ import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener{
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
-    private static final String TAG = "blahblah";
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
+    private ActionBarDrawerToggle drawerToggle;
     private final int DEFAULT_ZOOM = 17;
     private Location mLastKnownLocation;
-    private PulsatorLayout pulsator;
-    private GoogleMap mMap;
-    private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout mDrawerLayout;
+    private PulsatorLayout pulsator;
     private Toolbar toolbar;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public static Bitmap textAsBitmap(String text, float textSize, int textColor) {
+    private static Bitmap textAsBitmap(String text, float textSize, int textColor) {
         Paint paint = new Paint(ANTI_ALIAS_FLAG);
         paint.setTextSize(textSize);
         paint.setTypeface(Typeface.DEFAULT_BOLD);

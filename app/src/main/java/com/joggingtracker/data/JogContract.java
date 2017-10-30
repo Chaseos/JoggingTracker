@@ -2,15 +2,14 @@ package com.joggingtracker.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public class JogContract {
 
     public static final String AUTHORITY = "com.joggingtracker.data.JogsContentProvider.java";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     public static final class JogEntry implements BaseColumns {
-        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath("jogs")
                 .build();
 

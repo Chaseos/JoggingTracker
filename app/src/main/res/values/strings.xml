@@ -6,4 +6,21 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="are_you_sure">ARE YOU SURE?</string>
+    <string name="sure_discard">Are you sure you want to discard this run?</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
+    <string name="title">Title:</string>
+    <string name="miles">Miles</string>
+    <string name="avg_pace">Avg. Pace</string>
+    <string name="duration">Duration</string>
+    <string name="run">Run</string>
+    <string name="activity">Activity</string>
+    <string name="jog_tracker">Jog Tracker</string>
+    <string name="total_miles">Total Miles</string>
+    <string name="date">Date:</string>
+    <string name="miles2">Miles:</string>
+    <string name="time">Time:</string>
+    <string name="pace">Pace:</string>
 </resources>

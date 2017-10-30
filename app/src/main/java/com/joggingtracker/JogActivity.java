@@ -46,14 +46,13 @@ import java.util.ArrayList;
 public class JogActivity extends AppCompatActivity implements LocationListener, OnMapReadyCallback {
 
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    public static final String TAG = MapsActivity.class.getSimpleName();
+    private static final String TAG = JogActivity.class.getSimpleName();
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final long UPDATE_INTERVAL = 10 * 1000;
     private static final long FASTEST_INTERVAL = 2000;
     public static final String JOG_DATE = "jog_date";
     private boolean mLocationPermissionGranted;
-    public static final int JOG_MAP_ZOOM = 18;
+    private static final int JOG_MAP_ZOOM = 18;
     private Location mLastKnownLocation;
     private ArrayList<LatLng> mapPoints;
     private ImageView accuracyIndicator;
@@ -65,12 +64,10 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     private TextView timerTV;
     private TextView milesTV;
     private TextView speedTV;
-    private Context context;
     private String runtime;
     private GoogleMap mMap;
+    private long pauseTime;
     private String pace;
-    private int minutes;
-    private int seconds;
     private long millis;
 
     //runs without a timer by reposting this handler at the end of the runnable
@@ -80,8 +77,8 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         @Override
         public void run() {
             millis = System.currentTimeMillis() - startTime;
-            seconds = (int) (millis / 1000);
-            minutes = seconds / 60;
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
             seconds = seconds % 60;
             runtime = String.format("%d:%02d", minutes, seconds);
             timerTV.setText(runtime);
@@ -93,6 +90,8 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_run);
+
+
         milesTV = (TextView) findViewById(R.id.miles_textview);
         milesTV.setText("0.00");
         timerTV = (TextView) findViewById(R.id.timer_textview);
@@ -100,8 +99,6 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         timerHandler.postDelayed(timerRunnable, 0);
         speedTV = (TextView) findViewById(R.id.speed_textview);
         speedTV.setText("00:00");
-
-        context = this;
 
         accuracyIndicator = (ImageView) findViewById(R.id.accuracy_indicator);
         accuracyIndicator.setImageResource(R.drawable.red_circle);
@@ -132,10 +129,15 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         final ImageView pauseButton = (ImageView) findViewById(R.id.pause_button);
         final ImageView stopButton = (ImageView) findViewById(R.id.stop_button);
         final ImageView playButton = (ImageView) findViewById(R.id.play_button);
+        final ImageView lockIcon = (ImageView) findViewById(R.id.lock_icon);
+        final ImageView lockButton = (ImageView) findViewById(R.id.lock_button);
         final Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pauseTime = System.currentTimeMillis() - startTime;
+                timerHandler.removeCallbacks(timerRunnable);
                 v.vibrate(1000);
                 pauseButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
@@ -146,6 +148,8 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startTime = System.currentTimeMillis() - pauseTime;
+                timerHandler.postDelayed(timerRunnable, 0);
                 pauseButton.setVisibility(View.VISIBLE);
                 stopButton.setVisibility(View.GONE);
                 playButton.setVisibility(View.GONE);
@@ -155,21 +159,44 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Convert and insert data into database then place id in intent and send to RunFinished
-                Long dateTime = System.currentTimeMillis();
-                Gson gson = new Gson();
-                String jogPath = gson.toJson(mapPoints);
-                ContentValues values = new ContentValues();
-                values.put(JogContract.JogEntry.COLUMN_JOG_DATE_TIME, dateTime);
-                values.put(JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH, milesDistanceString);
-                values.put(JogContract.JogEntry.COLUMN_JOG_TIME_LENGTH, runtime);
-                values.put(JogContract.JogEntry.COLUMN_JOG_PACE, pace);
-                values.put(JogContract.JogEntry.COLUMN_JOG_PATH_JSON, jogPath);
-                getContentResolver().insert(JogContract.JogEntry.CONTENT_URI, values);
+                if (milesDistance < 0.01) {
+                    PopupJogDialogFragment popupJogDialogFragment = new PopupJogDialogFragment();
+                    popupJogDialogFragment.show(getSupportFragmentManager(), "discard");
+                } else {
+                    Long dateTime = System.currentTimeMillis();
+                    Gson gson = new Gson();
+                    String jogPath = gson.toJson(mapPoints);
+                    ContentValues values = new ContentValues();
+                    values.put(JogContract.JogEntry.COLUMN_JOG_DATE_TIME, dateTime);
+                    values.put(JogContract.JogEntry.COLUMN_JOG_MILES_LENGTH, milesDistanceString);
+                    values.put(JogContract.JogEntry.COLUMN_JOG_TIME_LENGTH, runtime);
+                    values.put(JogContract.JogEntry.COLUMN_JOG_PACE, pace);
+                    values.put(JogContract.JogEntry.COLUMN_JOG_PATH_JSON, jogPath);
+                    getContentResolver().insert(JogContract.JogEntry.CONTENT_URI, values);
 
-                Intent intent = new Intent(JogActivity.this, SingleJogActivity.class);
-                intent.putExtra(JOG_DATE, dateTime);
-                startActivity(intent);
+                    Intent intent = new Intent(JogActivity.this, SingleJogActivity.class);
+                    intent.putExtra(JOG_DATE, dateTime);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        lockIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lockIcon.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.GONE);
+                lockButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        lockButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                lockIcon.setVisibility(View.VISIBLE);
+                pauseButton.setVisibility(View.VISIBLE);
+                lockButton.setVisibility(View.GONE);
+                return true;
             }
         });
 
@@ -218,8 +245,6 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
                 }
             }
         }
-
-//        Log.d("blahblah", String.valueOf(location.getAccuracy()));
 
         if (location.getAccuracy() <= 6) {
             accuracyIndicator.setImageResource(R.drawable.green_circle);
@@ -337,7 +362,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    MainActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
 
@@ -386,5 +411,15 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
 
         // start the animation
         anim.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (milesDistance < 0.01) {
+            super.onBackPressed();
+        } else {
+            PopupJogDialogFragment popupJogDialogFragment = new PopupJogDialogFragment();
+            popupJogDialogFragment.show(getSupportFragmentManager(), "discard");
+        }
     }
 }

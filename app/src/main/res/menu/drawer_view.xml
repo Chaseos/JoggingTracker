@@ -5,10 +5,10 @@
         <item
             android:id="@+id/nav_run"
             android:icon="@drawable/ic_directions_run_black_24dp"
-            android:title="Run" />
+            android:title="@string/run" />
         <item
             android:id="@+id/nav_activity"
             android:icon="@drawable/ic_insert_chart_black_24dp"
-            android:title="Activity"/>
+            android:title="@string/activity"/>
     </group>
 </menu>
