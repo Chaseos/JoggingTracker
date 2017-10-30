@@ -64,6 +64,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
     private TextView timerTV;
     private TextView milesTV;
     private TextView speedTV;
+    private boolean paused;
     private String runtime;
     private GoogleMap mMap;
     private long pauseTime;
@@ -136,6 +137,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                paused = true;
                 pauseTime = System.currentTimeMillis() - startTime;
                 timerHandler.removeCallbacks(timerRunnable);
                 v.vibrate(1000);
@@ -148,6 +150,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                paused = false;
                 startTime = System.currentTimeMillis() - pauseTime;
                 timerHandler.postDelayed(timerRunnable, 0);
                 pauseButton.setVisibility(View.VISIBLE);
@@ -215,33 +218,33 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
 
     @Override
     public void onLocationChanged(Location location) {
+        if (!paused) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            mapPoints.add(latLng);
+            Polyline route = mMap.addPolyline(new PolylineOptions().clickable(true));
+            route.setPoints(mapPoints);
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if (previousLocation == null) {
+                previousLocation = location;
+            } else {
+                kmDistance += previousLocation.distanceTo(location);
+                milesDistance = (kmDistance / 1000) * .62137;
+                milesDistanceString = String.format("%.2f", milesDistance);
+                milesTV.setText(milesDistanceString);
+                previousLocation = location;
+                pace = "99+'";
 
-        mapPoints.add(latLng);
-        Polyline route = mMap.addPolyline(new PolylineOptions().clickable(true));
-        route.setPoints(mapPoints);
+                if (milesDistance > 0.009) {
+                    double totaltime = (millis / 1000) / milesDistance;
+                    int speedMins = (int) (totaltime / 60);
+                    int speedSecs = (int) (totaltime % 60);
 
-        if (previousLocation == null) {
-            previousLocation = location;
-        } else {
-            kmDistance += previousLocation.distanceTo(location);
-            milesDistance = (kmDistance / 1000) * .62137;
-            milesDistanceString = String.format("%.2f", milesDistance);
-            milesTV.setText(milesDistanceString);
-            previousLocation = location;
-            pace = "99+'";
-
-            if (milesDistance > 0.009) {
-                double totaltime = (millis / 1000) / milesDistance;
-                int speedMins = (int) (totaltime / 60);
-                int speedSecs = (int) (totaltime % 60);
-
-                if (speedMins > 99) {
-                    speedTV.setText(pace);
-                } else {
-                    pace = String.format("%d:%02d", speedMins, speedSecs);
-                    speedTV.setText(pace);
+                    if (speedMins > 99) {
+                        speedTV.setText(pace);
+                    } else {
+                        pace = String.format("%d:%02d", speedMins, speedSecs);
+                        speedTV.setText(pace);
+                    }
                 }
             }
         }
