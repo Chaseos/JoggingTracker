@@ -212,7 +212,7 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
                 == PackageManager.PERMISSION_GRANTED || ActivityCompat
                 .checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
         }
     }
 
@@ -247,6 +247,8 @@ public class JogActivity extends AppCompatActivity implements LocationListener, 
                     }
                 }
             }
+        } else {
+            previousLocation = null;
         }
 
         if (location.getAccuracy() <= 6) {
